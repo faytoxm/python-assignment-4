@@ -4,22 +4,27 @@ from analytics.analyser import GpaAnalyser
 def main():
     filename = "students.csv"
     fm = FileManager(filename)
-    if not fm.check_file(): return
+    if not fm.check_file():
+        print(f"Error: {filename} not found!")
+        return
     fm.create_output_folder()
 
     dl = DataLoader(filename)
     dl.load()
 
-    # Polymorphism demo
+    # --- DEMONSTRATION OF POLYMORPHISM ---
+    print("--- Polymorphism Demo ---")
     analysers = [GpaAnalyser(dl.students), GpaAnalyser(dl.students[:5])]
     for a in analysers:
-        print(a)
         a.analyse()
         a.print_results()
+    print("--------------------------\n")
 
-    # Association
+    # --- DEMONSTRATION OF ASSOCIATION ---
     gpa_an = GpaAnalyser(dl.students)
-    report = Report(gpa_an, ResultSaver(gpa_an.result, "output/result.json"))
+    gpa_an.analyse()
+    saver = ResultSaver(gpa_an.result, "output/result.json")
+    report = Report(gpa_an, saver)
     report.generate()
 
 if __name__ == "__main__":
